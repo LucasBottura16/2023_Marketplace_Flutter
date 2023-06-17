@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:marketplace/views/adverts.dart';
 import 'package:marketplace/views/login.dart';
+import 'package:marketplace/views/my_adverts.dart';
+import 'package:marketplace/views/new_advert.dart';
 
 class RouteGenerator {
 
-  static const String rotaAdverts = "/adverts";
   static const String rotaLogin = "/login";
+  static const String rotaAdverts = "/adverts";
+  static const String rotaMyAdverts = "/myAdverts";
+  static const String rotaNewAdvert = "/newAdvert";
 
   static Route<dynamic>? generateRoute(RouteSettings settings){
 
-    final args = settings.arguments;
+    //final args = settings.arguments;
 
     switch (settings.name){
       case rotaAdverts:
@@ -19,6 +23,14 @@ class RouteGenerator {
       case rotaLogin:
         return MaterialPageRoute(
             builder: (_) => const Login()
+        );
+      case rotaMyAdverts:
+        return MaterialPageRoute(
+            builder: (_) => const MyAdverts()
+        );
+        case rotaNewAdvert:
+        return MaterialPageRoute(
+            builder: (_) => const NewAdvert()
         );
       default:
         _errorRoute();

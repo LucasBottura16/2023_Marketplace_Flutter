@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:marketplace/components/custom_input.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:marketplace/models/my_user.dart';
 import 'package:marketplace/route_generator.dart';
+import 'package:marketplace/views/components/custom_button.dart';
+import 'package:marketplace/views/components/custom_input.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -68,7 +69,8 @@ class _LoginState extends State<Login> {
     await auth
         .signInWithEmailAndPassword(
             email: myUser.email, password: myUser.password)
-        .then((value) => Navigator.pushNamedAndRemoveUntil(context, RouteGenerator.rotaAdverts,(_) => false))
+        .then((value) => Navigator.pushNamedAndRemoveUntil(
+            context, RouteGenerator.rotaAdverts, (_) => false))
         .catchError((error) => alertError(error.toString()));
   }
 
@@ -77,11 +79,10 @@ class _LoginState extends State<Login> {
     await auth
         .createUserWithEmailAndPassword(
             email: myUser.email, password: myUser.password)
-        .then((value) =>debugPrint(
-        'cadastrou')
-            /*db.collection("Clientes").doc(value.user!.uid).set(myUser.tpMap())*/)
-        .then((value) => Navigator.pushNamedAndRemoveUntil(context, RouteGenerator.rotaAdverts,(_) => false)
-            )
+        .then((value) => debugPrint(
+            'cadastrou') /*db.collection("Clientes").doc(value.user!.uid).set(myUser.tpMap())*/)
+        .then((value) => Navigator.pushNamedAndRemoveUntil(
+            context, RouteGenerator.rotaAdverts, (_) => false))
         .catchError((error) => alertError(error.toString()));
   }
 
@@ -116,7 +117,7 @@ class _LoginState extends State<Login> {
                   children: [
                     const Text("Logar"),
                     Switch(
-                      activeColor: Colors.purple,
+                        activeColor: Colors.purple,
                         value: _register,
                         onChanged: (bool valor) {
                           setState(() {
@@ -126,17 +127,10 @@ class _LoginState extends State<Login> {
                     const Text("Cadastrar"),
                   ],
                 ),
-                ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        const Color(0xff9c27b0)),
-                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                        const EdgeInsets.fromLTRB(32, 16, 32, 16)),
-                  ),
-                  onPressed: _validateFields,
-                  child:
-                      _register ? const Text("Cadastrar") : const Text("Entrar"),
-                )
+                CustomButton(
+                    text: _register ? "Cadastrar" : "Entrar",
+                    onPressed: _validateFields,
+                ),
               ],
             ),
           ),

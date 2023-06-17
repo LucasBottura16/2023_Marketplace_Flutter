@@ -17,7 +17,7 @@ class _AdvertsState extends State<Adverts> {
   _itemChosenMenu(String itemChosen) {
     switch (itemChosen) {
       case "Meus anúncios":
-        Navigator.pushNamed(context, "routeName");
+        Navigator.pushNamed(context, RouteGenerator.rotaMyAdverts);
         break;
       case "Deslogar":
         auth.signOut().then(
@@ -50,6 +50,7 @@ class _AdvertsState extends State<Adverts> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("OLX"),
+        backgroundColor: const Color(0xff9c27b0),
         elevation: 0,
         actions: [
           PopupMenuButton<String>(
