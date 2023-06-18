@@ -1,10 +1,15 @@
 import 'package:brasil_fields/brasil_fields.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:marketplace/models/advertising.dart';
+import 'package:marketplace/route_generator.dart';
 import 'package:marketplace/views/components/custom_button.dart';
 import 'package:marketplace/views/components/custom_input.dart';
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:validadores/Validador.dart';
 
@@ -27,6 +32,8 @@ class _NewAdvertState extends State<NewAdvert> {
   final TextEditingController _controllerPrice =TextEditingController();
   final TextEditingController _controllerPhone =TextEditingController();
   final TextEditingController _controllerDescription =TextEditingController();
+  Advertising? _advertising;
+  BuildContext? _dialogContex;
 
   _selectGallery() async {
     File? imagemSelecionada;
@@ -38,10 +45,76 @@ class _NewAdvertState extends State<NewAdvert> {
     });
   }
 
+  _openDialog(BuildContext context){
+
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context){
+          return const AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 10),
+                Text("Salvando anúncio")
+              ],
+            ),
+          );
+        }
+    );
+
+  }
+
+  _saveAd() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? userLogged = auth.currentUser;
+    String? uidUser = userLogged!.uid;
+
+    _openDialog(_dialogContex!);
+
+    await _uploadImages();
+
+    firestore
+        .collection("MeusAnuncios").doc(uidUser)
+        .collection("Anuncios").doc(_advertising!.id)
+        .set(_advertising!.toMap()).then((_) => {
+          Navigator.pop(_dialogContex!),
+          Navigator.pushReplacementNamed(context, RouteGenerator.rotaMyAdverts)
+    });
+  }
+
+  Future _uploadImages() async {
+
+    FirebaseStorage storage = FirebaseStorage.instance;
+
+    Reference raiz = storage.ref();
+
+    for( var images in _listImage){
+
+      String nameImage = DateTime.now().millisecondsSinceEpoch.toString();
+      Reference file = raiz.child("MeusAnuncios").child(_advertising!.id)
+      .child(nameImage);
+
+      UploadTask uploadTask = file.putFile(images);
+      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
+
+      String url = await taskSnapshot.ref.getDownloadURL();
+      _advertising?.assets.add(url);
+
+    }
+
+  }
+
   @override
   void initState() {
     super.initState();
+
     _loadItems();
+
+    _advertising = Advertising();
+
   }
   _loadItems(){
 
@@ -203,6 +276,9 @@ class _NewAdvertState extends State<NewAdvert> {
                               ),
                               value: selectedItemState,
                               items: dropdownItemsState,
+                              onSaved: (states){
+                                _advertising?.states = states!;
+                              },
                               validator: (value){
                                 return Validador().add(
                                   Validar.OBRIGATORIO, msg: "Campo obrigatório"
@@ -229,6 +305,9 @@ class _NewAdvertState extends State<NewAdvert> {
                               ),
                               value: selectedItemCategory,
                               items: dropdownItemsCategory,
+                              onSaved: (category){
+                                _advertising?.category = category!;
+                              },
                               validator: (value){
                                 return Validador().add(
                                     Validar.OBRIGATORIO, msg: "Campo obrigatório"
@@ -249,6 +328,10 @@ class _NewAdvertState extends State<NewAdvert> {
                   CustomInput(
                       controller: _controllerTitle,
                       hint: "Titulo",
+                    onSaved: (title){
+                        _advertising?.title = title!;
+                        return null;
+                    },
                     validators: (value){
                        return Validador().add(
                           Validar.OBRIGATORIO, msg: "Campo obrigatório"
@@ -259,6 +342,10 @@ class _NewAdvertState extends State<NewAdvert> {
                   CustomInput(
                     controller: _controllerPrice,
                     hint: "Preço",
+                    onSaved: (price){
+                      _advertising?.price = price!;
+                      return null;
+                    },
                     type: TextInputType.number,
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
@@ -279,6 +366,10 @@ class _NewAdvertState extends State<NewAdvert> {
                       FilteringTextInputFormatter.digitsOnly,
                       TelefoneInputFormatter()
                     ],
+                    onSaved: (phone){
+                      _advertising?.phone = phone!;
+                      return null;
+                    },
                     validators: (value){
                       return Validador().add(
                           Validar.OBRIGATORIO, msg: "Campo obrigatório"
@@ -290,6 +381,10 @@ class _NewAdvertState extends State<NewAdvert> {
                     controller: _controllerDescription,
                     hint: "Descrição (200 caracteres)",
                     maxlines: null,
+                    onSaved: (desc){
+                      _advertising?.description = desc!;
+                      return null;
+                    },
                     validators: (value){
                       return Validador().add(
                           Validar.OBRIGATORIO, msg: "Campo obrigatório"
@@ -300,7 +395,14 @@ class _NewAdvertState extends State<NewAdvert> {
                   CustomButton(
                       text: "Cadastrar Anúncio",
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {}
+                        if (_formKey.currentState!.validate()) {
+
+                          _formKey.currentState?.save();
+
+                          _dialogContex = context;
+
+                          _saveAd();
+                        }
                       })
                 ],
               )

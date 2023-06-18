@@ -110,6 +110,7 @@ class _LoginState extends State<Login> {
                   controller: _controllerPassword,
                   hint: "Password",
                   obscure: true,
+                  maxlines: 1,
                   type: TextInputType.text,
                 ),
                 Row(

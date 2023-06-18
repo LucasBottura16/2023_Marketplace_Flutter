@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:validadores/Validador.dart';
 
 class CustomInput extends StatelessWidget {
   const CustomInput({
@@ -12,7 +11,8 @@ class CustomInput extends StatelessWidget {
     this.type = TextInputType.text,
     this.inputFormatters,
     this.maxlines,
-    this.validators
+    this.validators,
+    this.onSaved
   });
 
   final TextEditingController controller;
@@ -23,6 +23,7 @@ class CustomInput extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters;
   final int? maxlines;
   final FormFieldValidator<String>? validators;
+  final FormFieldValidator<String>? onSaved;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +34,7 @@ class CustomInput extends StatelessWidget {
       inputFormatters: inputFormatters,
       maxLines: maxlines,
       validator: validators,
+      onSaved: onSaved,
       style: const TextStyle(fontSize: 20),
       decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(32, 16, 32, 16),

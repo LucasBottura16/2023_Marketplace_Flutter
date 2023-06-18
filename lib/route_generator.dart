@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:marketplace/views/adverts.dart';
 import 'package:marketplace/views/login.dart';
 import 'package:marketplace/views/my_adverts.dart';
-import 'package:marketplace/views/new_advert.dart';
+import 'package:marketplace/views/new_adverts.dart';
 
 class RouteGenerator {
 
