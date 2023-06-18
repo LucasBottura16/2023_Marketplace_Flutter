@@ -211,7 +211,7 @@ class _AdvertsState extends State<Adverts> {
                           return ItensAdverts(
                               advertising: allAdverts,
                             onTapItem: (){
-                                debugPrint(allAdverts.title);
+                                Navigator.pushNamed(context, RouteGenerator.rotaAdDetails, arguments: allAdverts);
                                 },
                           );
                         }
