@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:marketplace/models/advertising.dart';
 import 'package:marketplace/route_generator.dart';
+import 'package:marketplace/util/configs.dart';
 import 'package:marketplace/views/components/custom_button.dart';
 import 'package:marketplace/views/components/custom_input.dart';
 import 'dart:io';
@@ -121,22 +122,10 @@ class _NewAdvertState extends State<NewAdvert> {
   }
   _loadItems(){
 
-    dropdownItemsCategory.add(
-        const DropdownMenuItem(value:"auto", child: Text("Automóvel"))
-    );
-    dropdownItemsCategory.add(
-        const DropdownMenuItem(value:"moda", child: Text("Moda"))
-    );
-    dropdownItemsCategory.add(
-        const DropdownMenuItem(value:"eletro", child: Text("Eletrônico"))
-    );
+   dropdownItemsCategory = DropConfigs.getCategory()!;
 
 
-   for(var estado in Estados.listaEstadosSigla){
-     dropdownItemsState.add(
-       DropdownMenuItem(value: estado,child: Text(estado))
-     );
-   }
+   dropdownItemsState = DropConfigs.getStates()!;
   }
 
   @override

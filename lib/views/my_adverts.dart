@@ -27,10 +27,7 @@ class _MyAdvertsState extends State<MyAdverts> {
 
   Future<Stream<QuerySnapshot>?>? _addListenerAdverts() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    debugPrint("entrou");
      await _retrieveUserData();
-
-    debugPrint("uid aqui $_uidUser");
     
     Stream<QuerySnapshot> stream =
     firestore.collection("MeusAnuncios").doc(_uidUser).collection("Anuncios")
@@ -40,8 +37,6 @@ class _MyAdvertsState extends State<MyAdverts> {
       _controller.add(event);
     });
 
-    debugPrint("dados aqui ${_controller.toString()}");
-    debugPrint("saiu");
     return null;
   }
   
