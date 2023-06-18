@@ -72,6 +72,29 @@ class _AdvertsState extends State<Adverts> {
     return null;
   }
 
+  Future<Stream<QuerySnapshot>?>? _filterListenerAdverts() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    Query query = firestore.collection("Anuncios");
+
+    debugPrint("entrou filtro");
+
+    if(_selectedItemState != null){
+      query = query.where("estado", isEqualTo: _selectedItemState);
+    }
+    if(_selectedItemCategory != null){
+      query = query.where("Categoria", isEqualTo: _selectedItemCategory);
+    }
+
+    Stream<QuerySnapshot> stream = query.snapshots();
+
+    stream.listen((event) {
+      _controler.add(event);
+    });
+
+    return null;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -123,6 +146,7 @@ class _AdvertsState extends State<Adverts> {
                           setState(() {
                             _selectedItemState = state;
                           });
+                          _filterListenerAdverts();
                         },
                       ),
                     ),
@@ -145,6 +169,7 @@ class _AdvertsState extends State<Adverts> {
                           setState(() {
                             _selectedItemCategory = category;
                           });
+                          _filterListenerAdverts();
                         },
                       ),
                     ),
