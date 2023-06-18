@@ -12,7 +12,22 @@ class Advertising {
   String? _description;
   List<String>? _assets;
 
-  Advertising(){
+  Advertising();
+
+  Advertising.fromDocumentSnapshot(DocumentSnapshot documentSnapshot){
+
+    id = documentSnapshot.id;
+    states = documentSnapshot["estado"];
+    category = documentSnapshot["Categoria"];
+    title = documentSnapshot["titulo"];
+    price = documentSnapshot["preco"];
+    phone = documentSnapshot["telefone"];
+    description = documentSnapshot["descricao"];
+    assets = List<String>.from(documentSnapshot["imagens"]);
+
+  }
+
+  Advertising.gerarId(){
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     CollectionReference anuncios = firestore.collection("MeusAnuncuis");
     id = anuncios.doc().id;

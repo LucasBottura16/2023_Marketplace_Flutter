@@ -79,9 +79,12 @@ class _NewAdvertState extends State<NewAdvert> {
     firestore
         .collection("MeusAnuncios").doc(uidUser)
         .collection("Anuncios").doc(_advertising!.id)
+        .set(_advertising!.toMap());
+
+    firestore.collection("Anuncios").doc(_advertising!.id)
         .set(_advertising!.toMap()).then((_) => {
           Navigator.pop(_dialogContex!),
-          Navigator.pushReplacementNamed(context, RouteGenerator.rotaMyAdverts)
+          Navigator.pop(context)
     });
   }
 
@@ -113,7 +116,7 @@ class _NewAdvertState extends State<NewAdvert> {
 
     _loadItems();
 
-    _advertising = Advertising();
+    _advertising = Advertising.gerarId();
 
   }
   _loadItems(){
